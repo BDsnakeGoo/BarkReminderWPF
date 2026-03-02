@@ -1,0 +1,91 @@
+﻿<Window x:Class="BarkReminderApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bark 定时提醒助手 V3 (可编辑版)" Height="600" Width="700" Background="#F0F2F5">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Bark Key 配置 -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Bark 推送地址 (修改后自动保存):" FontWeight="Bold" Margin="0,0,0,5" Foreground="#333"/>
+            <TextBox Name="TxtBarkUrl" Padding="8" BorderThickness="1" BorderBrush="#CCC" 
+                     TextChanged="BarkUrl_TextChanged"
+                     Text="https://api.day.app/52RBCjvCjXppDWe3QuqvyR/"/>
+        </StackPanel>
+
+        <!-- 任务列表 -->
+        <GroupBox Grid.Row="1" Header="提醒任务清单 (双击时间或内容即可修改)">
+            <DataGrid Name="DgReminders" AutoGenerateColumns="False" CanUserAddRows="False" 
+                      SelectionMode="Single" Background="White" RowHeight="35"
+                      CellEditEnding="DgReminders_CellEditEnding">
+                <DataGrid.Columns>
+                    <!-- 可编辑列 -->
+                    <DataGridTextColumn Header="时间" Binding="{Binding Time, UpdateSourceTrigger=PropertyChanged}" Width="80" IsReadOnly="False"/>
+                    <DataGridTextColumn Header="提醒内容" Binding="{Binding Message, UpdateSourceTrigger=PropertyChanged}" Width="*" IsReadOnly="False"/>
+
+                    <!-- 只读列：防止双击崩溃 -->
+                    <DataGridTextColumn Header="调度模式" Binding="{Binding ModeDisplay}" Width="150" IsReadOnly="True"/>
+
+                    <DataGridTemplateColumn Header="操作" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="删除" Click="DeleteBtn_Click" Background="#FF4D4F" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- 添加任务面板 -->
+        <Border Grid.Row="2" Background="White" Margin="0,15,0,0" Padding="15" CornerRadius="8" BorderThickness="1" BorderBrush="#EEE">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="时间 (HH:mm)"/>
+                        <TextBox Name="NewTime" Text="08:00" Width="65" Margin="0,5,0,0" Padding="3"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="15,0">
+                        <TextBlock Text="提醒内容"/>
+                        <TextBox Name="NewMsg" Margin="0,5,0,0" Padding="3" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="调度逻辑"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <RadioButton Name="RbWorkday" Content="法定工作日" IsChecked="True" Checked="Mode_Changed"/>
+                            <RadioButton Name="RbHoliday" Content="法定节假日" Margin="10,0,0,0" Checked="Mode_Changed"/>
+                            <RadioButton Name="RbCustom" Content="自定义周几" Margin="10,0,0,0" Checked="Mode_Changed"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Name="WeekPanel" Orientation="Horizontal" Margin="0,12,0,0" Visibility="Collapsed">
+                    <TextBlock Text="选择星期：" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#666"/>
+                    <CheckBox Name="Cb1" Content="一" Margin="0,0,10,0" IsChecked="True"/>
+                    <CheckBox Name="Cb2" Content="二" Margin="0,0,10,0" IsChecked="True"/>
+                    <CheckBox Name="Cb3" Content="三" Margin="0,0,10,0" IsChecked="True"/>
+                    <CheckBox Name="Cb4" Content="四" Margin="0,0,10,0" IsChecked="True"/>
+                    <CheckBox Name="Cb5" Content="五" Margin="0,0,10,0" IsChecked="True"/>
+                    <CheckBox Name="Cb6" Content="六" Margin="0,0,10,0"/>
+                    <CheckBox Name="Cb7" Content="日" Margin="0,0,10,0"/>
+                </StackPanel>
+
+                <Button Content="+ 添加新提醒" Click="AddBtn_Click" Margin="0,15,0,0" Height="35" 
+                        Background="#1890FF" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
+                <TextBlock Name="StatusTxt" Text="状态: 运行中" Margin="0,5,0,0" Foreground="Gray" FontSize="11"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
